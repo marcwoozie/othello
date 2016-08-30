@@ -9,7 +9,7 @@
 		'black'
 	];
 	var flips;
-	var isLocate;
+	var isFlipped;
 
 	var render = function() {
 		for (var x = 0; x <= 7; x++) {
@@ -45,6 +45,7 @@
 	};
 
 	var flipCheck = function(x, y) {
+		isFlipped = false;
 		for (var i = -1; i <= 1; i++) {
 			for (var k = -1; k <= 1; k++) {
 				var checkX = x + i;
@@ -65,6 +66,7 @@
 							break;
 						} else if( cells[checkX][checkY] == playerFlag ) {
 							for (var flipIndex = 0; flipIndex < flips.length; flipIndex++) {
+								isFlipped = true;
 								var flipX = flips[flipIndex]['x'];
 								var flipY = flips[flipIndex]['y'];
 								cells[flipX][flipY] = playerFlag;
@@ -77,6 +79,7 @@
 				}
 			}
 		}
+		return isFlipped;
 	};
 
 	$(document).on("click", ".cell", function() {
@@ -88,7 +91,10 @@
 		}
 
 		cells[x][y] = playerFlag;
-		flipCheck(x, y);
+		if(! flipCheck(x, y) ) {
+			cells[x][y] = 0;
+			return;
+		}
 		boardEle.children().remove();
 		render();
 
