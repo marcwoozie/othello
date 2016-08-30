@@ -10,8 +10,14 @@
 	];
 	var flips;
 	var isFlipped;
+	var pieceCounter = {
+		white: 2,
+		black: 2
+	};
 
 	var render = function() {
+		var whiteCount = 0;
+		var blackCount = 0;
 		for (var x = 0; x <= 7; x++) {
 			for (var y = 0; y <= 7; y++) {
 				var index = cells[x][y];
@@ -20,14 +26,21 @@
 						boardEle.append('<div data-x='+x+' data-y='+y+' class="cell"></div>');
 						break;
 					case 'white': 
+						whiteCount++;
 						boardEle.append('<div data-x='+x+' data-y='+y+' class="cell white"></div>');
 						break;
 					case 'black': 
+						blackCount++;
 						boardEle.append('<div data-x='+x+' data-y='+y+' class="cell black"></div>');
 						break;
 				}
 			}
 		}
+		pieceCounter.white = whiteCount;
+		pieceCounter.black = blackCount;
+		$("#player").text(playerFlag == 1 ? "白" : "黒");
+		$("#whiteCount").text(pieceCounter.white);
+		$("#blackCount").text(pieceCounter.black);
 	};
 
 	var init = function() {
