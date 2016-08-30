@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>othello</title>
+	<style>
+		#board {
+			overflow: hidden;
+			width: 400px;
+			height: 400px;
+			background: green;
+		}
+		.cell {
+			float: left;
+			position: relative;
+			border: 1px solid black;
+			width: 48px;
+			height: 48px;
+		}
+		.white:after {
+			position: absolute;
+			content: "";
+			display: block;
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			background: white; 
+			left: 4px;
+			top: 4px;
+		}
+		.black:after {
+			position: absolute;
+			content: "";
+			display: block;
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			background: black; 
+			left: 4px;
+			top: 4px;			
+		}
+	</style>
+</head>
+<body>
+	
+	<div id="board">
+		
+	</div>
+	<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+	<script src="./othello.js"></script>
+
+</body>
+</html>
