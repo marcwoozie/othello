@@ -1,7 +1,7 @@
 ;(function() {
 
 	var cells = [];
-	var boardEle = $("#board");
+	var boardEl = document.getElementById("board");
 	var playerFlag = 1;
 	var classes = [
 		null,
@@ -18,29 +18,43 @@
 	var render = function() {
 		var whiteCount = 0;
 		var blackCount = 0;
+		var cell;
 		for (var x = 0; x <= 7; x++) {
 			for (var y = 0; y <= 7; y++) {
 				var index = cells[x][y];
 				switch(classes[index]) {
 					case null: 
-						boardEle.append('<div data-x='+x+' data-y='+y+' class="cell"></div>');
+						cell = document.createElement('div');
+						cell.classList.add('cell');
+						cell.setAttribute('data-x', x);
+						cell.setAttribute('data-y', y);
+						cell.onclick = function(e) {
+							var target = (e.srcElement || e.target);
+							x = Number(target.getAttribute('data-x'));
+							y = Number(target.getAttribute('data-y'));
+							return putPiece(x, y);
+						}
+						boardEl.appendChild(cell);
 						break;
 					case 'white': 
-						whiteCount++;
-						boardEle.append('<div data-x='+x+' data-y='+y+' class="cell white"></div>');
+						cell = document.createElement('div');
+						cell.classList.add('cell');
+						cell.classList.add('white');
+						cell.setAttribute('data-x', x);
+						cell.setAttribute('data-y', y);
+						boardEl.appendChild(cell);
 						break;
 					case 'black': 
-						blackCount++;
-						boardEle.append('<div data-x='+x+' data-y='+y+' class="cell black"></div>');
+						cell = document.createElement('div');
+						cell.classList.add('cell');
+						cell.classList.add('black');
+						cell.setAttribute('data-x', x);
+						cell.setAttribute('data-y', y);
+						boardEl.appendChild(cell);
 						break;
 				}
 			}
 		}
-		pieceCounter.white = whiteCount;
-		pieceCounter.black = blackCount;
-		$("#player").text(playerFlag == 1 ? "白" : "黒");
-		$("#whiteCount").text(pieceCounter.white);
-		$("#blackCount").text(pieceCounter.black);
 	};
 
 	var init = function() {
@@ -83,6 +97,7 @@
 								var flipX = flips[flipIndex]['x'];
 								var flipY = flips[flipIndex]['y'];
 								cells[flipX][flipY] = playerFlag;
+								flip(flipX, flipY);
 							}
 							break;
 						} else {
@@ -95,10 +110,19 @@
 		return isFlipped;
 	};
 
-	$(document).on("click", ".cell", function() {
-		var x = $(this).data('x');
-		var y = $(this).data('y');
+	var flip = function(x, y) {
+		var index = getCellIndex(x, y);
+		index += 1;
+		removeClassName = playerFlag == 1 ? classes[2] : classes[1];
+    board.childNodes[index].classList.remove(removeClassName)
+    board.childNodes[index].classList.add(classes[playerFlag]);
+	}
 
+	var getCellIndex = function(x, y) {
+		return ((8 * Number(x)) + Number(y));
+	};
+
+	var putPiece = function(x, y) {
 		if( cells[x][y] !== 0 ) {
 			return;
 		}
@@ -107,12 +131,12 @@
 		if(! flipCheck(x, y) ) {
 			cells[x][y] = 0;
 			return;
+		} else {
+			cells[x][y] = playerFlag;
+			flip(x, y);
 		}
-		boardEle.children().remove();
-		render();
-
 		playerFlag = playerFlag == 1 ? 2 : 1;
-	});
+	};
 
 	// 開始
 	init();
