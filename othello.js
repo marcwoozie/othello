@@ -112,14 +112,13 @@
 
 	var flip = function(x, y) {
 		var index = getCellIndex(x, y);
-		index += 1;
 		removeClassName = playerFlag == 1 ? classes[2] : classes[1];
     board.childNodes[index].classList.remove(removeClassName)
     board.childNodes[index].classList.add(classes[playerFlag]);
 	}
 
 	var getCellIndex = function(x, y) {
-		return ((8 * Number(x)) + Number(y));
+		return ((8 * Number(x)) + Number(y)) + 1;
 	};
 
 	var putPiece = function(x, y) {
@@ -127,7 +126,6 @@
 			return;
 		}
 
-		cells[x][y] = playerFlag;
 		if(! flipCheck(x, y) ) {
 			cells[x][y] = 0;
 			return;
