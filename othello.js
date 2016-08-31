@@ -81,7 +81,7 @@
     cells[4][3] = 2;
     cells[4][4] = 1;
     render();
-		pieceCounter();    
+    pieceCounter();    
   };
 
   var flipCheck = function(x, y) {
@@ -131,34 +131,33 @@
   }
 
   var pieceCounter = function() {
-  	whiteCount = 0;
-  	blackCount = 0;
+    whiteCount = 0;
+    blackCount = 0;
     for (var x = 0; x <= 7; x++) {
       for (var y = 0; y <= 7; y++) {
         var index = cells[x][y];
         switch(classes[index]) {
-        	case null: break;
-        	case 'white': whiteCount++; break;
-        	case 'black': blackCount++; break;
+          case null: break;
+          case 'white': whiteCount++; break;
+          case 'black': blackCount++; break;
         }
       }
     }
     whiteCountEl.innerText = whiteCount;
-   	blackCountEl.innerText = blackCount;
+    blackCountEl.innerText = blackCount;
   };
 
   var addLog = function(x, y) {
-  	logs.push({
-  		player: playerFlag,
-  		x: x,
-  		y: y,
-  		cellIndex: getCellIndex(x, y)
-  	});
-  	console.log(logs);
+    logs.push({
+      player: playerFlag,
+      x: x,
+      y: y,
+      cellIndex: getCellIndex(x, y)
+    });
   }
 
   var getCellIndex = function(x, y) {
-    return ((8 * Number(x)) + Number(y)) + 1;
+    return ((8 * x) + y) + 1;
   };
 
   var putPiece = function(x, y) {
