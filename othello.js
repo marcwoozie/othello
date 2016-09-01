@@ -205,11 +205,11 @@
     }
     playerFlag = getPairPlayerFlag();
     if( isCPUPlay && playerFlag != 1 ) {
-      setTimeout(cpu, CPULoadingSecounds);
+      setTimeout(moveCPU, CPULoadingSecounds);
     }
   };
 
-  var cpu = function() {
+  var moveCPU = function() {
     var maxFlipingCount = 0;
     var cpuPutCell = null;
     var possibleCells = [];
@@ -237,34 +237,40 @@
   };
 
   var getFlipingCells = function(x, y) {
+    flips = [];
     for (var i = -1; i <= 1; i++) {
       for (var k = -1; k <= 1; k++) {
         var checkX = x + i;
         var checkY = y + k;
 
-        if( checkX < 0 || checkX > 7 ) return [];
-        if( checkY < 0 || checkY > 7 ) return [];
+        if( checkX < 0 || checkX > 7 ) continue;
+        if( checkY < 0 || checkY > 7 ) continue;
 
         if( (playerFlag != cells[checkX][checkY]) && (0 != cells[checkX][checkY]) ) {
-          flips = [{x: checkX, y: checkY}];
+          var tmpFlips = [{x: checkX, y: checkY}];
           while(true) {
             checkX += i;
             checkY += k;
-            if( checkX < 0 || checkX > 7 ) return [];
-            if( checkY < 0 || checkY > 7 ) return [];
-
-            if( cells[checkX][checkY] == 0 ) {
-              return [];
+            if( checkX < 0 || checkX > 7 ) {
+              tmpFlips = []; 
+              break;
+            } else if( checkY < 0 || checkY > 7 ) {
+              tmpFlips = []; 
+              break;
+            } else if( cells[checkX][checkY] == 0 ) {
+              tmpFlips = [];
+              break;
             } else if( cells[checkX][checkY] == playerFlag ) {
-              return flips;
+              break;
             } else {
-              flips.push({x: checkX, y: checkY});
+              tmpFlips.push({x: checkX, y: checkY});
             }
           }
+          flips = flips.concat(tmpFlips);
         }
       }
     }
-    return [];
+    return flips;
   }
 
   // 開始
