@@ -157,7 +157,7 @@
   }
 
   var getCellIndex = function(x, y) {
-    return ((8 * x) + y) + 1;
+    return ((8 * x) + y);
   };
 
   var putPiece = function(x, y) {
