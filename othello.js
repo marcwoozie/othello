@@ -72,7 +72,7 @@
     }
   };
 
-  var init = function() {
+  var start = function() {
     for (var x = 0; x <= 7; x++) {
       cells[x] = [];
       for (var y = 0; y <= 7; y++) {
@@ -89,6 +89,7 @@
 
   var flipCheck = function(x, y) {
     isFlipped = false;
+    flips = getFlipingCells(x, y);
     for (var i = -1; i <= 1; i++) {
       for (var k = -1; k <= 1; k++) {
         var checkX = x + i;
@@ -209,7 +210,7 @@
   };
 
   var cpu = function() {
-    var mostFlipingCount = 0;
+    var maxFlipingCount = 0;
     var cpuPutCell = null;
     var possibleCells = [];
     for (var x = 0; x <= 7; x++) {
@@ -221,8 +222,8 @@
             y: y
           });
           var flipingCells = getFlipingCells(x, y);
-          if( mostFlipingCount < flipingCells.length ) {
-            mostFlipingCount = flipingCells.length;
+          if( maxFlipingCount < flipingCells.length ) {
+            maxFlipingCount = flipingCells.length;
             cpuPutCell = {x:x, y:y};
           }
         } 
@@ -232,6 +233,7 @@
       putPiece(cpuPutCell.x, cpuPutCell.y);
     } else {
       alert('置き場所がないので白の攻撃です');
+      playerFlag = getPairPlayerFlag();
     }
   };
 
@@ -267,6 +269,6 @@
   }
 
   // 開始
-  init();
+  start();
 
 })();   
