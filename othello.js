@@ -18,6 +18,8 @@
     white: 2,
     black: 2
   };
+  var isCPUPlay = true;
+  var CPULoadingSecounds = 1000;
 
   var render = function() {
     var whiteCount = 0;
@@ -201,7 +203,68 @@
       pieceCounter();
     }
     playerFlag = getPairPlayerFlag();
+    if( isCPUPlay && playerFlag != 1 ) {
+      setTimeout(cpu, CPULoadingSecounds);
+    }
   };
+
+  var cpu = function() {
+    var mostFlipingCount = 0;
+    var cpuPutCell = null;
+    var possibleCells = [];
+    for (var x = 0; x <= 7; x++) {
+      for (var y = 0; y <= 7; y++) {
+        var index = cells[x][y];
+        if( index == 0 ) {
+          possibleCells.push({
+            x: x,
+            y: y
+          });
+          var flipingCells = getFlipingCells(x, y);
+          if( mostFlipingCount < flipingCells.length ) {
+            mostFlipingCount = flipingCells.length;
+            cpuPutCell = {x:x, y:y};
+          }
+        } 
+      }
+    }
+    if( cpuPutCell != null ) {
+      putPiece(cpuPutCell.x, cpuPutCell.y);
+    } else {
+      alert('置き場所がないので白の攻撃です');
+    }
+  };
+
+  var getFlipingCells = function(x, y) {
+    for (var i = -1; i <= 1; i++) {
+      for (var k = -1; k <= 1; k++) {
+        var checkX = x + i;
+        var checkY = y + k;
+
+        if( checkX < 0 || checkX > 7 ) return [];
+        if( checkY < 0 || checkY > 7 ) return [];
+
+        if( (playerFlag != cells[checkX][checkY]) && (0 != cells[checkX][checkY]) ) {
+          flips = [{x: checkX, y: checkY}];
+          while(true) {
+            checkX += i;
+            checkY += k;
+            if( checkX < 0 || checkX > 7 ) return [];
+            if( checkY < 0 || checkY > 7 ) return [];
+
+            if( cells[checkX][checkY] == 0 ) {
+              return [];
+            } else if( cells[checkX][checkY] == playerFlag ) {
+              return flips;
+            } else {
+              flips.push({x: checkX, y: checkY});
+            }
+          }
+        }
+      }
+    }
+    return [];
+  }
 
   // 開始
   init();
