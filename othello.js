@@ -88,43 +88,18 @@
   };
 
   var flipCheck = function(x, y) {
-    isFlipped = false;
-    flips = getFlipingCells(x, y);
-    for (var i = -1; i <= 1; i++) {
-      for (var k = -1; k <= 1; k++) {
-        var checkX = x + i;
-        var checkY = y + k;
-
-        if( checkX < 0 || checkX > 7 ) continue;
-        if( checkY < 0 || checkY > 7 ) continue;
-
-        if( (playerFlag != cells[checkX][checkY]) && (0 != cells[checkX][checkY]) ) {
-          flips = [{x: checkX, y: checkY}];
-          while(true) {
-            checkX += i;
-            checkY += k;
-            if( checkX < 0 || checkX > 7 ) break;
-            if( checkY < 0 || checkY > 7 ) break;
-
-            if( cells[checkX][checkY] == 0 ) {
-              break;
-            } else if( cells[checkX][checkY] == playerFlag ) {
-              for (var flipIndex = 0; flipIndex < flips.length; flipIndex++) {
-                isFlipped = true;
-                var flipX = flips[flipIndex]['x'];
-                var flipY = flips[flipIndex]['y'];
-                cells[flipX][flipY] = playerFlag;
-                flip(flipX, flipY);
-              }
-              break;
-            } else {
-              flips.push({x: checkX, y: checkY});
-            }
-          }
-        }
+    flips = getFlippedCells(x, y);
+    if( flips.length === 0 ) {
+      return false;
+    } else {
+      for (var flipIndex = 0; flipIndex <= flips.length - 1; flipIndex++) {
+        var flipX = flips[flipIndex]['x'];
+        var flipY = flips[flipIndex]['y'];
+        cells[flipX][flipY] = playerFlag;
+        flip(flipX, flipY);
       }
+      return true;
     }
-    return isFlipped;
   };
 
   var flip = function(x, y) {
@@ -220,7 +195,7 @@
             x: x,
             y: y
           });
-          var flipingCells = getFlipingCells(x, y);
+          var flipingCells = getFlippedCells(x, y);
           if( maxFlipingCount < flipingCells.length ) {
             maxFlipingCount = flipingCells.length;
             cpuPutCell = {x:x, y:y};
@@ -236,7 +211,7 @@
     }
   };
 
-  var getFlipingCells = function(x, y) {
+  var getFlippedCells = function(x, y) {
     flips = [];
     for (var i = -1; i <= 1; i++) {
       for (var k = -1; k <= 1; k++) {
