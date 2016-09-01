@@ -215,8 +215,7 @@
     var possibleCells = [];
     for (var x = 0; x <= 7; x++) {
       for (var y = 0; y <= 7; y++) {
-        var index = cells[x][y];
-        if( index == 0 ) {
+        if( cells[x][y] == 0 ) {
           possibleCells.push({
             x: x,
             y: y
@@ -232,8 +231,8 @@
     if( cpuPutCell != null ) {
       putPiece(cpuPutCell.x, cpuPutCell.y);
     } else {
-      alert('置き場所がないので白の攻撃です');
       playerFlag = getPairPlayerFlag();
+      alert(classes[playerFlag] + ' Turn');
     }
   };
 
