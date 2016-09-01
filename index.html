@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>othello</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<style>
 		#board {
 			overflow: hidden;
@@ -14,8 +15,8 @@
 			float: left;
 			position: relative;
 			border: 1px solid black;
-			width: 48px;
-			height: 48px;
+			width: 50px;
+			height: 50px;
 		}
 		.white:after {
 			position: absolute;
@@ -48,14 +49,42 @@
 	</style>
 </head>
 <body>
+
+	<header class="bs-docs-nav navbar navbar-static-top">
+		<div class="container">
+			<div class="navbar-header">
+				<p class="navbar-brand">Othello</p>
+			</div>
+		</div>
+	</header>
 	
-	<h1 id="player"></h1>
-	<ul>
-		<li>白<span id="whiteCount"></span></li>
-		<li>黒<span id="blackCount"></span></li>
-	</ul>
-	<div id="board">
-		
+	<div class="container">
+		<div class="col-md-8">
+			<h1 id="player"></h1>
+			<div id="board"></div>
+		</div>
+		<div class="col-md-4">
+
+			<div class="col-md-6">
+				<h2><small>白 </small><span id="whiteCount"></span></h2>
+			</div>
+			<div class="col-md-6">
+				<h2><small>黒 </small><span id="blackCount"></span></h2>
+			</div>
+
+			<div class="bs-example">
+				<table class="table table-striped">
+					<caption>ログ</caption>
+					<thead>
+						<th>時間</th>
+						<th>プレイヤー</th>
+						<th>場所</th>
+					</thead>
+					<tbody id="logTableBody">
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 	<script src="./othello.js"></script>
 

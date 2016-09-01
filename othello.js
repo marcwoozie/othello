@@ -4,6 +4,7 @@
   var boardEl = document.getElementById("board");
   var whiteCountEl = document.getElementById("whiteCount");
   var blackCountEl = document.getElementById("blackCount");
+  var logTableBodyEl = document.getElementById("logTableBody");
   var playerFlag = 1; // 白から
   var logs = [];
   var classes = [
@@ -125,7 +126,8 @@
 
   var flip = function(x, y) {
     var index = getCellIndex(x, y);
-    removeClassName = playerFlag == 1 ? classes[2] : classes[1];
+    var pairPlayerFlag = getPairPlayerFlag();
+    removeClassName = classes[pairPlayerFlag];
     board.childNodes[index].classList.remove(removeClassName);
     board.childNodes[index].classList.add(classes[playerFlag]);
   }
@@ -154,11 +156,35 @@
       y: y,
       cellIndex: getCellIndex(x, y)
     });
+    tr = document.createElement('tr');
+    timeTD = document.createElement('td');
+    timeTD.innerText = getTimeNow();
+    playerTD = document.createElement('td');
+    playerTD.innerText = classes[playerFlag];
+    positionTD = document.createElement('td');
+    positionTD.innerText = (x + 1) + "," + (y + 1);
+    tr.appendChild(timeTD);
+    tr.appendChild(playerTD);
+    tr.appendChild(positionTD);
+    logTableBodyEl.appendChild(tr);
+  }
+
+  var getTimeNow = function() {
+    var date = new Date();
+    var h, i, s;
+    h = date.getHours();
+    m = date.getMinutes();
+    s = date.getSeconds();
+    return h + "時" + m + "分" + s + "秒";
   }
 
   var getCellIndex = function(x, y) {
-    return ((8 * x) + y) + 1;
+    return ((8 * x) + y);
   };
+
+  var getPairPlayerFlag = function() {
+    return playerFlag == 1 ? 2 : 1;
+  }
 
   var putPiece = function(x, y) {
     if( cells[x][y] !== 0 ) {
@@ -174,7 +200,7 @@
       addLog(x, y);
       pieceCounter();
     }
-    playerFlag = playerFlag == 1 ? 2 : 1;
+    playerFlag = getPairPlayerFlag();
   };
 
   // 開始
