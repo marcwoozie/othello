@@ -13,22 +13,37 @@
     'black'
   ];
   var flips;
-  var isFlipped;
   var pieceCounter = {
     white: 2,
     black: 2
   };
+  var playerRate = {
+    white: 0,
+    black: 0
+  };
   var isCPUPlay = true;
   var CPULoadingSecounds = 1000;
 
-  var render = function() {
+  // 評価表
+  const CELLS_RATING = [
+    [30, -12, 0, -1, -1, 0, -12, 30],
+    [-12, -15, -3, -3, -3, -3, -15, -12],
+    [0, -3, 0, -1, -1, 0, -3, 0],
+    [-1, -3, -1, -1, -1, -1, -3, -1],
+    [-1, -3, -1, -1, -1, -1, -3, -1],
+    [0, -3, 0, -1, -1, 0, -3, 0],
+    [-12, -15, -3, -3, -3, -3, -15, -12],
+    [30, -12, 0, -1, -1, 0, -12, 30],
+  ];
+
+  var initRender = function() {
     var whiteCount = 0;
     var blackCount = 0;
     var cell;
     for (var x = 0; x <= 7; x++) {
       for (var y = 0; y <= 7; y++) {
-        var index = cells[x][y];
-        switch(classes[index]) {
+        var playerIndex = cells[x][y];
+        switch(classes[playerIndex]) {
           case null: 
             cell = document.createElement('div');
             cell.classList.add('cell');
@@ -83,8 +98,9 @@
     cells[3][4] = 2;
     cells[4][3] = 2;
     cells[4][4] = 1;
-    render();
-    pieceCounter();    
+    initRender();
+    setPieceCounter();    
+    setPlayerRating();
   };
 
   var flipCheck = function(x, y) {
@@ -103,20 +119,20 @@
   };
 
   var flip = function(x, y) {
-    var index = getCellIndex(x, y);
+    var cellIndex = getCellIndex(x, y);
     var pairPlayerFlag = getPairPlayerFlag();
     removeClassName = classes[pairPlayerFlag];
-    board.childNodes[index].classList.remove(removeClassName);
-    board.childNodes[index].classList.add(classes[playerFlag]);
-  }
+    board.childNodes[cellIndex].classList.remove(removeClassName);
+    board.childNodes[cellIndex].classList.add(classes[playerFlag]);
+  };
 
-  var pieceCounter = function() {
+  var setPieceCounter = function() {
     whiteCount = 0;
     blackCount = 0;
     for (var x = 0; x <= 7; x++) {
       for (var y = 0; y <= 7; y++) {
-        var index = cells[x][y];
-        switch(classes[index]) {
+        var playerIndex = cells[x][y];
+        switch(classes[playerIndex]) {
           case null: break;
           case 'white': whiteCount++; break;
           case 'black': blackCount++; break;
@@ -145,7 +161,7 @@
     tr.appendChild(playerTD);
     tr.appendChild(positionTD);
     logTableBodyEl.appendChild(tr);
-  }
+  };
 
   var getTimeNow = function() {
     var date = new Date();
@@ -154,7 +170,7 @@
     m = date.getMinutes();
     s = date.getSeconds();
     return h + "時" + m + "分" + s + "秒";
-  }
+  };
 
   var getCellIndex = function(x, y) {
     return ((8 * x) + y);
@@ -162,13 +178,12 @@
 
   var getPairPlayerFlag = function() {
     return playerFlag == 1 ? 2 : 1;
-  }
+  };
 
   var putPiece = function(x, y) {
     if( cells[x][y] !== 0 ) {
       return;
     }
-
     if(! flipCheck(x, y) ) {
       cells[x][y] = 0;
       return;
@@ -176,7 +191,8 @@
       cells[x][y] = playerFlag;
       flip(x, y);
       addLog(x, y);
-      pieceCounter();
+      setPieceCounter();
+      setPlayerRating();
     }
     playerFlag = getPairPlayerFlag();
     if( isCPUPlay && playerFlag != 1 ) {
@@ -186,23 +202,34 @@
 
   var moveCPU = function() {
     var maxFlipingCount = 0;
+    var maxCellRating = 0;
     var cpuPutCell = null;
     var possibleCells = [];
     for (var x = 0; x <= 7; x++) {
       for (var y = 0; y <= 7; y++) {
         if( cells[x][y] == 0 ) {
-          possibleCells.push({
-            x: x,
-            y: y
-          });
-          var flipingCells = getFlippedCells(x, y);
-          if( maxFlipingCount < flipingCells.length ) {
-            maxFlipingCount = flipingCells.length;
-            cpuPutCell = {x:x, y:y};
+          flipingCells = getFlippedCells(x, y);
+          if( flipingCells.length > 0 ) {
+            possibleCells.push({
+              x: x,
+              y: y,
+              cellRating: CELLS_RATING[x][y],
+              flipingCells: flipingCells
+            });
           }
         } 
       }
     }
+
+    for (var i = 0; i <= possibleCells.length - 1; i++) {
+      if( i == 0 ) maxCellRating = possibleCells[i].cellRating;      
+      if( maxCellRating <= possibleCells[i].cellRating ) {
+        maxFlipingCount = flipingCells;
+        maxCellRating = possibleCells[i].cellRating;
+        cpuPutCell = {x:possibleCells[i].x, y:possibleCells[i].y};
+      }
+    }
+
     if( cpuPutCell != null ) {
       putPiece(cpuPutCell.x, cpuPutCell.y);
     } else {
@@ -246,7 +273,19 @@
       }
     }
     return flips;
-  }
+  };
+
+  var setPlayerRating = function() {
+    for (var x = 0; x <= 7; x++) {
+      for (var y = 0; y <= 7; y++) {
+        var rating = CELLS_RATING[x][y];
+        var playerIndex = cells[x][y];
+        if( playerIndex != 0 ) {
+          playerRate[classes[playerIndex]] += rating;
+        } 
+      }
+    }
+  };
 
   // 開始
   start();
