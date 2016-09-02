@@ -87,7 +87,7 @@
     }
   };
 
-  var start = function() {
+  var gameStart = function() {
     for (var x = 0; x <= 7; x++) {
       cells[x] = [];
       for (var y = 0; y <= 7; y++) {
@@ -194,6 +194,11 @@
       setPieceCounter();
       setPlayerRating();
     }
+
+    if( isGameEnd() ) {
+      return;
+    }
+
     playerFlag = getPairPlayerFlag();
     if( isCPUPlay && playerFlag != 1 ) {
       setTimeout(moveCPU, CPULoadingSecounds);
@@ -287,7 +292,21 @@
     }
   };
 
+  var isGameEnd = function() {
+    for (var x = 0; x <= 7; x++) {
+      if( cells[x].indexOf(0) >= 0 ) {
+        return false;
+      }
+    }
+    if( whiteCount > blackCount ) {
+      alert('You Win');
+    } else {
+      alert('You Lose...');
+    }
+    return true;
+  };
+
   // 開始
-  start();
+  gameStart();
 
 })();   
