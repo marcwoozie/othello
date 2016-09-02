@@ -156,7 +156,7 @@
     playerTD = document.createElement('td');
     playerTD.innerText = classes[playerFlag];
     positionTD = document.createElement('td');
-    positionTD.innerText = (x + 1) + "," + (y + 1);
+    positionTD.innerText = "縦"+ (x + 1) + " 横" + (y + 1);
     tr.appendChild(timeTD);
     tr.appendChild(playerTD);
     tr.appendChild(positionTD);
@@ -209,11 +209,37 @@
     var maxFlipingCount = 0;
     var maxCellRating = 0;
     var cpuPutCell = null;
+    var possibleCells = getPossibleCells();
+    for (var i = 0; i <= possibleCells.length - 1; i++) {
+      if( i == 0 ) maxCellRating = possibleCells[i].cellRating;      
+      if( maxCellRating <= possibleCells[i].cellRating ) {
+        maxCellRating = possibleCells[i].cellRating;
+        cpuPutCell = {x:possibleCells[i].x, y:possibleCells[i].y};
+      }
+    }
+
+    if( cpuPutCell != null ) {
+      putPiece(cpuPutCell.x, cpuPutCell.y);
+
+      // 白の打てる場所があるか確認
+      possibleCells = getPossibleCells();
+      if( possibleCells.length == 0 ) {
+        playerFlag = getPairPlayerFlag();
+        alert(classes[playerFlag] + ' Turn');
+        moveCPU();
+      }
+    } else {
+      playerFlag = getPairPlayerFlag();
+      alert(classes[playerFlag] + ' Turn');
+    }
+  };
+
+  var getPossibleCells = function() {
     var possibleCells = [];
     for (var x = 0; x <= 7; x++) {
       for (var y = 0; y <= 7; y++) {
         if( cells[x][y] == 0 ) {
-          flipingCells = getFlippedCells(x, y);
+          var flipingCells = getFlippedCells(x, y);
           if( flipingCells.length > 0 ) {
             possibleCells.push({
               x: x,
@@ -225,22 +251,7 @@
         } 
       }
     }
-
-    for (var i = 0; i <= possibleCells.length - 1; i++) {
-      if( i == 0 ) maxCellRating = possibleCells[i].cellRating;      
-      if( maxCellRating <= possibleCells[i].cellRating ) {
-        maxFlipingCount = flipingCells;
-        maxCellRating = possibleCells[i].cellRating;
-        cpuPutCell = {x:possibleCells[i].x, y:possibleCells[i].y};
-      }
-    }
-
-    if( cpuPutCell != null ) {
-      putPiece(cpuPutCell.x, cpuPutCell.y);
-    } else {
-      playerFlag = getPairPlayerFlag();
-      alert(classes[playerFlag] + ' Turn');
-    }
+    return possibleCells;
   };
 
   var getFlippedCells = function(x, y) {
