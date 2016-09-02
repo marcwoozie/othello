@@ -309,7 +309,9 @@
         return false;
       }
     }
-    if( whiteCount > blackCount ) {
+    if( whiteCount == blackCount ) {
+      alert('Draw...');
+    } else if( whiteCount > blackCount ) {
       alert('You Win');
     } else {
       alert('You Lose...');
