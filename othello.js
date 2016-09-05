@@ -104,13 +104,13 @@
   };
 
   var flipCheck = function(x, y) {
-    flips = getFlippedCells(x, y);
-    if( flips.length === 0 ) {
+    flippedCells = getFlippedCells(x, y);
+    if( flippedCells.length === 0 ) {
       return false;
     } else {
-      for (var flipIndex = 0; flipIndex <= flips.length - 1; flipIndex++) {
-        var flipX = flips[flipIndex]['x'];
-        var flipY = flips[flipIndex]['y'];
+      for (var flipIndex = 0; flipIndex <= flippedCells.length - 1; flipIndex++) {
+        var flipX = flippedCells[flipIndex]['x'];
+        var flipY = flippedCells[flipIndex]['y'];
         cells[flipX][flipY] = playerFlag;
         flip(flipX, flipY);
       }
@@ -239,13 +239,13 @@
     for (var x = 0; x <= 7; x++) {
       for (var y = 0; y <= 7; y++) {
         if( cells[x][y] == 0 ) {
-          var flipingCells = getFlippedCells(x, y);
-          if( flipingCells.length > 0 ) {
+          var flippedCells = getFlippedCells(x, y);
+          if( flippedCells.length > 0 ) {
             possibleCells.push({
               x: x,
               y: y,
               cellRating: CELLS_RATING[x][y],
-              flipingCells: flipingCells
+              flippedCells: flippedCells
             });
           }
         } 
